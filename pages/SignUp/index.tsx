@@ -1,20 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { Form, Label, Input, LinkContainer, Button, Header, Error } from './style';
+import useInput from '@hooks/useInput';
 
 const SignUp = () => {
-  const [email, setEmail] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordCheck, setPasswordCheck] = useState('');
+  const [email, onChangeEmail, setEmail] = useInput('');
+  const [nickname, onChangeNickname, setNickname] = useInput('');
+  const [password, , setPassword] = useInput('');
+  const [passwordCheck, , setPasswordCheck] = useInput('');
   const [missMatchError, setMissMatchError] = useState(false);
-
-  const onChangeEmail = useCallback(e => {
-    setEmail(e.target.value);
-  }, []);
-
-  const onChangeNickname = useCallback(e => {
-    setNickname(e.target.value);
-  }, []);
 
   const onChangePassword = useCallback(
     e => {
@@ -22,6 +15,7 @@ const SignUp = () => {
       setMissMatchError(e.target.value !== passwordCheck);
     },
     [passwordCheck],
+    // deps:
     // 함수 내부의 변수는 안 써도 된다
     // 함수 외부의 변수는 써야 한다.
   );
