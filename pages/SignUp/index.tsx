@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Form, Label, Input, LinkContainer, Button, Header, Error } from './style';
 import useInput from '@hooks/useInput';
+import axios from 'axios';
 
 const SignUp = () => {
   const [email, onChangeEmail, setEmail] = useInput('');
@@ -32,9 +33,27 @@ const SignUp = () => {
     e => {
       e.preventDefault();
       if (!missMatchError) {
-        console.log('서버로 회원가입 요청 전송 ');
+        axios
+          .post('https://localhost:3095/api/users', {
+            email,
+            nickname,
+            password,
+          })
+          .then(response => {
+            console.log('success:', response);
+          })
+          .catch(error => {
+            console.log('error:', error.response);
+          })
+          .finally(() => {});
+
+        // 요청하는 주소/포트가 다르면 options 라는 요청을 한번 더 보낸다.
+        // 주소가 다르면 요청이 된다.
+
+        // cors 해결 방법
+        // 1. 백엔드 개발자에게 요청
+        // 2. 프론트에서 알아서 하는 방법 : 프록시 설정
       }
-      console.log(console.log(email, nickname, password, passwordCheck));
     },
     [email, nickname, password, passwordCheck, missMatchError],
   );
