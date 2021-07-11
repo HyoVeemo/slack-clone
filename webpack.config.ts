@@ -78,6 +78,13 @@ const config: webpack.Configuration = {
     historyApiFallback: true,
     port: 3090,
     publicPath: '/dist/',
+    // front 에서 보낸 요청은 3090 이지만 3095 에서 보낸 것으로 취급한다는 의미
+    proxy: {
+      '/api/': {
+        target: 'http://localhost:3095',
+        changeOrigin: true,
+      },
+    },
   },
 };
 
