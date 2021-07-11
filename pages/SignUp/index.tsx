@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Form, Label, Input, LinkContainer, Button, Header, Error } from './style';
+import { Form, Label, Input, LinkContainer, Button, Header, Error, Success } from './style';
 import useInput from '@hooks/useInput';
 import axios from 'axios';
 
@@ -9,6 +9,8 @@ const SignUp = () => {
   const [password, , setPassword] = useInput('');
   const [passwordCheck, , setPasswordCheck] = useInput('');
   const [missMatchError, setMissMatchError] = useState(false);
+  const [signUpError, setSignUpError] = useState('');
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
 
   const onChangePassword = useCallback(
     e => {
@@ -33,6 +35,12 @@ const SignUp = () => {
     e => {
       e.preventDefault();
       if (!missMatchError) {
+        // 비동기 요청에서 setState 하는 경우 비동기 요청 전에 초기화
+        // 요청을 연달아 보내는 경우 첫번째 요청에 남아있던 결과가 다음 요청에 표시될 수 있음
+        // 로딩
+        setSignUpError('');
+        setSignUpSuccess(false);
+
         axios
           .post('https://localhost:3095/api/users', {
             email,
@@ -40,12 +48,17 @@ const SignUp = () => {
             password,
           })
           .then(response => {
+            // 성공
             console.log('success:', response);
+            setSignUpSuccess(true);
           })
           .catch(error => {
-            console.log('error:', error.response);
+            // 실패
+            setSignUpError(error.response?.data || error.message);
           })
-          .finally(() => {});
+          .finally(() => {
+            // 성공과 실패에 관계없이 실행되는 경우
+          });
 
         // 요청하는 주소/포트가 다르면 options 라는 요청을 한번 더 보낸다.
         // 주소가 다르면 요청이 된다.
@@ -93,6 +106,8 @@ const SignUp = () => {
           </div>
           {missMatchError && <Error>비밀번호가 일치하지 않습니다. </Error>}
           {!nickname && <Error> 닉네임을 입력하세요.. </Error>}
+          {signUpError && <Error> {signUpError} </Error>}
+          {signUpSuccess && <Success> 회원가입이 완료되었습니다 🎉 로그인하여 완료해주세요. </Success>}
         </Label>
         <Button type="submit">회원가입</Button>
       </Form>
