@@ -43,11 +43,17 @@ const SignUp = () => {
         setSignUpSuccess(false);
 
         axios
-          .post('https://localhost:3095/api/users', {
-            email,
-            nickname,
-            password,
-          })
+          .post(
+            'https://localhost:3095/api/users',
+            {
+              email,
+              nickname,
+              password,
+            },
+            {
+              withCredentials: true,
+            },
+          )
           .then(response => {
             // 성공
             console.log('success:', response);

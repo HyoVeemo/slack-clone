@@ -5,16 +5,19 @@ import React, { useCallback, useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 // import fetcher from '@utils/fetcher';
 // import { Simulate } from 'react-dom/test-utils';
-// import useSWR from 'swr';
+import useSWR from 'swr';
+import fetcher from '@utils/fetcher';
 
 const LogIn = () => {
-  // const { data: userData, error, revalidate } = useSWR('/api/users', fetcher);
+  const { data, error, revalidate } = useSWR('http://localhost:3095/api/users', fetcher, { dedupingInterval: 100000 });
+  // 내가 원할 때 api 호출하게 하는 함수
   const [logInError, setLogInError] = useState(false);
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
   const onSubmit = useCallback(
     e => {
       e.preventDefault();
+
       setLogInError(false);
       axios
         .post(
@@ -25,7 +28,7 @@ const LogIn = () => {
           },
         )
         .then(() => {
-          // revalidate();
+          revalidate();
         })
         .catch(error => {
           setLogInError(error.response?.data?.statusCode === 401);
