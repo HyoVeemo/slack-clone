@@ -37,6 +37,10 @@ const LogIn = () => {
     [email, password],
   );
 
+  if (data) {
+    return <Redirect to={'/workspace/channel'}></Redirect>;
+  }
+
   // console.log(error, userData);
   // if (!error) {
   //   //console.log('로그인됨', userData);
