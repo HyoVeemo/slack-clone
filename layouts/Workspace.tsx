@@ -4,13 +4,14 @@ import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
-// children을 사용하는 컴포넌트 FC (children 을 안 쓰는 컴포넌트는 VFC)
+// children 을 사용하는 컴포넌트 FC (children 을 안 쓰는 컴포넌트는 VFC type)
 const Workspace: FC = ({ children }) => {
   const { data, error, revalidate } = useSWR('http://localhost:3095/api/users', fetcher, { dedupingInterval: 100000 });
 
   const onLogout = useCallback(() => {
     axios
       .post('http://localhost:3095/api/users/logout', null, {
+        // 쿠키 공유 옵션
         withCredentials: true,
       })
       .then(() => {
@@ -27,6 +28,7 @@ const Workspace: FC = ({ children }) => {
   return (
     <div>
       <button onClick={onLogout}> 로그아웃</button>
+      {children}
     </div>
   );
 };
