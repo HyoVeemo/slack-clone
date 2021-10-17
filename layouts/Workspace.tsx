@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom';
 
 // children 을 사용하는 컴포넌트 FC (children 을 안 쓰는 컴포넌트는 VFC type)
 const Workspace: FC = ({ children }) => {
-  const { data, error, revalidate } = useSWR('http://localhost:3095/api/users', fetcher, { dedupingInterval: 100000 });
+  const { data, error, revalidate, mutate } = useSWR('http://localhost:3095/api/users', fetcher, { dedupingInterval: 100000 });
 
   const onLogout = useCallback(() => {
     axios
@@ -15,9 +15,7 @@ const Workspace: FC = ({ children }) => {
         withCredentials: true,
       })
       .then(() => {
-        // data 에는 사용자 정보가 들어있다가 revalidate를 호출하며 null 로 초기화된다.
-        // swr 은 컴포넌트를 넘나들며 전역 스토리지가 된다.
-        revalidate();
+        mutate(false, false);
       });
   }, []);
 
