@@ -48,7 +48,7 @@ const SignUp = () => {
 
         axios
           .post(
-            'https://localhost:3095/api/users',
+            'http://localhost:3095/api/users',
             {
               email,
               nickname,
@@ -81,10 +81,6 @@ const SignUp = () => {
     },
     [email, nickname, password, passwordCheck, missMatchError],
   );
-
-  if (data === undefined) {
-    return <div>로딩중... </div>;
-  }
 
   if (data) {
     return <Redirect to="/workspace/channel"></Redirect>;
