@@ -1,8 +1,20 @@
+import {
+  Channels,
+  Chats,
+  Header, MenuScroll,
+  ProfileImg,
+  RightMenu,
+  WorkspaceName,
+  Workspaces,
+  WorkspaceWrapper,
+} from '@layouts/Workspace/style';
 import React, { FC, useCallback } from 'react';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import gravatar from 'gravatar'
+import Channel from '@pages/Channel';
 
 // children 을 사용하는 컴포넌트 FC (children 을 안 쓰는 컴포넌트는 VFC type)
 const Index: FC = ({ children }) => {
@@ -25,8 +37,28 @@ const Index: FC = ({ children }) => {
 
   return (
     <div>
+      <Header>
+        slack
+        <RightMenu>
+          <span>
+            <ProfileImg src={gravatar.url(data.nickname, {s:'28px', d:'retro'})} alt={data.nickname}>
+            </ProfileImg>
+          </span>
+        </RightMenu>
+      </Header>
       <button onClick={onLogout}> 로그아웃</button>
-      {children}
+      <WorkspaceWrapper>
+        <Workspaces>workspace</Workspaces>
+        <Channels>
+          <WorkspaceName>
+            workspacename
+          </WorkspaceName>
+          <MenuScroll>
+            menuscroll
+          </MenuScroll>
+        </Channels>
+        <Chats>Chats</Chats>
+      </WorkspaceWrapper>
     </div>
   );
 };
