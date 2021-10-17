@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
 // children 을 사용하는 컴포넌트 FC (children 을 안 쓰는 컴포넌트는 VFC type)
-const Workspace: FC = ({ children }) => {
+const Index: FC = ({ children }) => {
   const { data, error, revalidate, mutate } = useSWR('http://localhost:3095/api/users', fetcher, { dedupingInterval: 100000 });
 
   const onLogout = useCallback(() => {
@@ -31,4 +31,4 @@ const Workspace: FC = ({ children }) => {
   );
 };
 
-export default Workspace;
+export default Index;

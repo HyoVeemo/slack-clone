@@ -6,7 +6,7 @@ const Login = loadable(() => import('@pages/Login'));
 const SignUp = loadable(() => import('@pages/SignUp'));
 const Channel = loadable(() => import('@pages/Channel'));
 
-const App: FC = () => {
+const Index: FC = () => {
   return (
     <Switch>
       <Redirect exact path="/" to="/login"></Redirect>
@@ -17,4 +17,4 @@ const App: FC = () => {
   );
 };
 
-export default App;
+export default Index;
