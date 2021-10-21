@@ -12,9 +12,12 @@ import React, { FC, useCallback } from 'react';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import gravatar from 'gravatar'
-import Channel from '@pages/Channel';
+import loadable from '@loadable/component';
+
+const Channel = loadable(() => import('@pages/Channel'));
+const DirectMessage = loadable(() => import('@pages/DirectMessage'));
 
 // children 을 사용하는 컴포넌트 FC (children 을 안 쓰는 컴포넌트는 VFC type)
 const Index: FC = ({ children }) => {
@@ -57,7 +60,12 @@ const Index: FC = ({ children }) => {
             menuscroll
           </MenuScroll>
         </Channels>
-        <Chats>Chats</Chats>
+        <Chats>
+          <Switch>
+            <Route path="/workspace/channel" component={Channel}></Route>
+            <Route path="/workspace/dm" component={DirectMessage}></Route>
+          </Switch>
+        </Chats>
       </WorkspaceWrapper>
     </div>
   );
