@@ -1,3 +1,4 @@
+
 import {
   Channels,
   Chats,
@@ -15,6 +16,8 @@ import axios from 'axios';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import gravatar from 'gravatar'
 import loadable from '@loadable/component';
+import Menu from '@components/Menu/index';
+
 
 const Channel = loadable(() => import('@pages/Channel'));
 const DirectMessage = loadable(() => import('@pages/DirectMessage'));
@@ -46,6 +49,7 @@ const Index: FC = ({ children }) => {
           <span>
             <ProfileImg src={gravatar.url(data.nickname, {s:'28px', d:'retro'})} alt={data.nickname}>
             </ProfileImg>
+            <Menu>프로필메뉴</Menu>
           </span>
         </RightMenu>
       </Header>
