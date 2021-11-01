@@ -57,7 +57,8 @@ const Index: FC = ({ children }) => {
   }, []);
 
   // 토글 함수
-  const onClickUserProfile = useCallback(() => {
+  const onClickUserProfile = useCallback((e) => {
+    e.stopPropagation();
     setShowUserMenu((prev) => !prev);
   }, []);
 
