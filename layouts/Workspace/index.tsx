@@ -25,6 +25,7 @@ import Modal from "@components/Modal";
 import { IUser } from "../../typing/db";
 import useInput from "@hooks/useInput";
 import { Button, Input, Label } from "@pages/SignUp/style";
+import { toast } from "react-toastify";
 
 
 const Channel = loadable(() => import("@pages/Channel"));
@@ -75,7 +76,7 @@ const Index: FC = ({ children }) => {
     if (!newWorkspace || !newWorkspace.trim()) { // 띄어쓰기 방지
       return;
     }
-    if (!newUrl || newUrl.trim()) {
+    if (!newUrl || !newUrl.trim()) {
       return;
     }
 
@@ -87,12 +88,13 @@ const Index: FC = ({ children }) => {
     }).then(() => {
       revalidate();
       setShowCreateWorkspaceModal(false);
-      setNewWorkspace('');
-      setNewUrl('');
+      setNewWorkspace("");
+      setNewUrl("");
     })
-      .catch((error)=>{
-        console.dir(error)
-      })
+      .catch((error) => {
+        console.dir(error);
+        toast.error(error.response?.data, { position: "bottom-center" });
+      });
 
   }, [newWorkspace, newUrl]);
 
@@ -103,7 +105,6 @@ const Index: FC = ({ children }) => {
   return (
     <div>
       <Header>
-        slack
         <RightMenu>
           <span onClick={onClickUserProfile}>
             <ProfileImg src={gravatar.url(userData.nickname, { s: "28px", d: "retro" })} alt={userData.nickname} />
