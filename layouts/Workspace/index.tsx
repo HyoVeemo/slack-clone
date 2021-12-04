@@ -98,7 +98,6 @@ const Index: FC = ({ children }) => {
            </span>
         </RightMenu>
       </Header>
-      <button onClick={onLogout}> 로그아웃</button>
       <WorkspaceWrapper>
         <Workspaces>
           {userData?.Workspaces?.map((ws) => {
