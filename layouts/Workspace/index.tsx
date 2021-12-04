@@ -78,10 +78,13 @@ const Index: FC = ({ children }) => {
     if (!newUrl || newUrl.trim()) {
       return;
     }
-    axios.post ('/api/workspace', {
+
+    axios.post("http://localhost:3095/api/workspaces", {
       workspace: newWorkspace,
       url: newUrl
-    }).then(()=>{
+    }, {
+      withCredentials: true
+    }).then(() => {
       revalidate();
       setShowCreateWorkspaceModal(false);
       setNewWorkspace('');
