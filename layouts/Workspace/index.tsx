@@ -8,12 +8,12 @@ import {
   ProfileImg,
   ProfileModal,
   RightMenu,
-  WorkspaceButton,
+  WorkspaceButton, WorkspaceModal,
   WorkspaceName,
   Workspaces,
   WorkspaceWrapper
 } from "@layouts/Workspace/style";
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useState, VFC } from "react";
 import useSWR from "swr";
 import fetcher from "@utils/fetcher";
 import axios from "axios";
@@ -22,6 +22,7 @@ import gravatar from "gravatar";
 import loadable from "@loadable/component";
 import Menu from "@components/Menu/index";
 import Modal from "@components/Modal";
+import CreateChannelModal from "@components/CreateChannelModal"
 import { IUser } from "../../typing/db";
 import useInput from "@hooks/useInput";
 import { Button, Input, Label } from "@pages/SignUp/style";
@@ -32,9 +33,11 @@ const Channel = loadable(() => import("@pages/Channel"));
 const DirectMessage = loadable(() => import("@pages/DirectMessage"));
 
 // children 을 사용하는 컴포넌트 FC (children 을 안 쓰는 컴포넌트는 VFC type)
-const Index: FC = ({ children }) => {
+const Index: VFC = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
+  const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
+  const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
   const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput("");
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput("");
 
@@ -67,8 +70,10 @@ const Index: FC = ({ children }) => {
     setShowCreateWorkspaceModal(true);
   }, []);
 
+  // 화면의 모달을 모두 닫는 이벤트
   const onCloseModal = useCallback(() => {
     setShowCreateWorkspaceModal(false);
+    setShowCreateChannelModal(false);
   }, []);
 
   const onCreateWorkspace = useCallback((e) => {
@@ -97,6 +102,18 @@ const Index: FC = ({ children }) => {
       });
 
   }, [newWorkspace, newUrl]);
+
+    // 토글 함수
+  const toggleShowWorkspaceModal =  useCallback((e)=>{
+    e.stopPropagation();
+    setShowWorkspaceModal((prev) => !prev);
+  },[])
+
+    const onClickAddChannel =  useCallback((e)=>{
+    // e.stopPropagation();
+    setShowCreateChannelModal(true);
+  },[])
+
 
   if (!userData) {
     return <Redirect to="/login"></Redirect>;
@@ -135,11 +152,17 @@ const Index: FC = ({ children }) => {
           <AddButton onClick={onClickCreateWorkSpace}>+</AddButton>
         </Workspaces>
         <Channels>
-          <WorkspaceName>
-            workspacename
+          <WorkspaceName onClick={toggleShowWorkspaceModal}>
+            Sleact
           </WorkspaceName>
           <MenuScroll>
-            menuscroll
+            <Menu show={showWorkspaceModal} onCloseModal={toggleShowWorkspaceModal} style={{top:95, left:80} }>
+              <WorkspaceModal>
+                <h2>슬랙</h2>
+                <button onClick={onClickAddChannel}>채널 만들기</button>
+                <button onClick={onLogout}>로그아웃</button>
+              </WorkspaceModal>
+            </Menu>
           </MenuScroll>
         </Channels>
         <Chats>
@@ -162,6 +185,7 @@ const Index: FC = ({ children }) => {
           </form>
         </Modal>
       </WorkspaceWrapper>
+      <CreateChannelModal show={showCreateChannelModal} onCloseModal={onCloseModal}></CreateChannelModal>
     </div>
   );
 };
