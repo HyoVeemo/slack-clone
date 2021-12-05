@@ -6,7 +6,7 @@ import axios from "axios";
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
 import useSWR from "swr";
-import { IChannel, IUser } from "../../typing/db";
+import { IChannel, IUser } from "@typings/db";
 import fetcher from "@utils/fetcher";
 
 interface Props {
