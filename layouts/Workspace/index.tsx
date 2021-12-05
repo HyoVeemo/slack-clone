@@ -29,6 +29,8 @@ import useInput from "@hooks/useInput";
 import { Button, Input, Label } from "@pages/SignUp/style";
 import { toast } from "react-toastify";
 import { useParams } from "react-router";
+import InviteWorkspaceModal from "@components/InviteWorkspaceModal";
+import InviteChannelModal from "@components/InviteChannelModal";
 
 
 const Channel = loadable(() => import("@pages/Channel"));
@@ -40,6 +42,8 @@ const Index: VFC = () => {
   const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
   const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
+  const [showInviteWorkspaceModal, setShowInviteWorkspaceModal] = useState(false);
+  const [showInviteChannelModal, setShowInviteChannelModal] = useState(false);
   const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput("");
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput("");
 
@@ -77,6 +81,8 @@ const Index: VFC = () => {
   const onCloseModal = useCallback(() => {
     setShowCreateWorkspaceModal(false);
     setShowCreateChannelModal(false);
+    setShowInviteWorkspaceModal(false);
+    setShowInviteChannelModal(false);
   }, []);
 
   const onCreateWorkspace = useCallback((e) => {
@@ -113,9 +119,13 @@ const Index: VFC = () => {
   }, []);
 
   const onClickAddChannel = useCallback((e) => {
-    // e.stopPropagation();
     setShowCreateChannelModal(true);
   }, []);
+
+  const onClickInviteWorkspace = useCallback((e)=>{
+    setShowInviteWorkspaceModal(true);
+  },[])
+
 
 
   if (!userData) {
@@ -162,6 +172,7 @@ const Index: VFC = () => {
             <Menu show={showWorkspaceModal} onCloseModal={toggleShowWorkspaceModal} style={{ top: 95, left: 80 }}>
               <WorkspaceModal>
                 <h2>슬랙</h2>
+                <button onClick={onClickInviteWorkspace}>채널 초대</button>
                 <button onClick={onClickAddChannel}>채널 만들기</button>
                 <button onClick={onLogout}>로그아웃</button>
               </WorkspaceModal>
@@ -191,8 +202,13 @@ const Index: VFC = () => {
       </WorkspaceWrapper>
       <CreateChannelModal show={showCreateChannelModal} onCloseModal={onCloseModal}
                           setShowCreateChannelModal={setShowCreateChannelModal} />
+      <InviteWorkspaceModal show={showInviteWorkspaceModal} onCloseModal={onCloseModal}
+                            setShowInviteWorkspaceModal={setShowInviteWorkspaceModal} />
+      <InviteChannelModal show={showInviteChannelModal} onCloseModal={onCloseModal}
+                            setShowInviteChannelModal={setShowInviteChannelModal} />
     </div>
   );
 };
+
 
 export default Index;
