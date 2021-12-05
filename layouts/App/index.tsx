@@ -13,7 +13,7 @@ const Index: FC = () => {
       <Redirect exact path="/" to="/login"></Redirect>
       <Route path="/login" component={Login}></Route>
       <Route path="/signup" component={SignUp}></Route>
-      <Route path="/workspace" component={WorkSpace}></Route>
+      <Route path="/workspace/:workspace" component={WorkSpace}></Route>
     </Switch>
   );
 };
