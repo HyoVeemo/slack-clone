@@ -8,12 +8,13 @@ import {
   ProfileImg,
   ProfileModal,
   RightMenu,
-  WorkspaceButton, WorkspaceModal,
+  WorkspaceButton,
+  WorkspaceModal,
   WorkspaceName,
   Workspaces,
   WorkspaceWrapper
 } from "@layouts/Workspace/style";
-import React, { FC, useCallback, useState, VFC } from "react";
+import React, { useCallback, useState, VFC } from "react";
 import useSWR from "swr";
 import fetcher from "@utils/fetcher";
 import axios from "axios";
@@ -22,11 +23,12 @@ import gravatar from "gravatar";
 import loadable from "@loadable/component";
 import Menu from "@components/Menu/index";
 import Modal from "@components/Modal";
-import CreateChannelModal from "@components/CreateChannelModal"
-import { IUser } from "../../typing/db";
+import CreateChannelModal from "@components/CreateChannelModal";
+import { IChannel, IUser } from "../../typing/db";
 import useInput from "@hooks/useInput";
 import { Button, Input, Label } from "@pages/SignUp/style";
 import { toast } from "react-toastify";
+import { useParams } from "react-router";
 
 
 const Channel = loadable(() => import("@pages/Channel"));
@@ -41,14 +43,15 @@ const Index: VFC = () => {
   const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput("");
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput("");
 
-
+  const { workspace } = useParams<{ workspace: string }>();
   const {
     data: userData,
     error,
     revalidate,
     mutate
   } = useSWR<IUser | false>("http://localhost:3095/api/users", fetcher, { dedupingInterval: 100000 });
-
+  const { data: channelData } = useSWR<IChannel[]>(userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null, fetcher);
+  
   const onLogout = useCallback(() => {
     axios
       .post("http://localhost:3095/api/users/logout", null, {
@@ -103,22 +106,22 @@ const Index: VFC = () => {
 
   }, [newWorkspace, newUrl]);
 
-    // 토글 함수
-  const toggleShowWorkspaceModal =  useCallback((e)=>{
+  // 토글 함수
+  const toggleShowWorkspaceModal = useCallback((e) => {
     e.stopPropagation();
     setShowWorkspaceModal((prev) => !prev);
-  },[])
+  }, []);
 
-    const onClickAddChannel =  useCallback((e)=>{
+  const onClickAddChannel = useCallback((e) => {
     // e.stopPropagation();
     setShowCreateChannelModal(true);
-  },[])
+  }, []);
 
 
   if (!userData) {
     return <Redirect to="/login"></Redirect>;
   }
-
+// todo: channels list 에서 child in a list should have a unique "key" prop. 에러. 임시로 만든 리스트이므로 나중에 해결
   return (
     <div>
       <Header>
@@ -156,13 +159,14 @@ const Index: VFC = () => {
             Sleact
           </WorkspaceName>
           <MenuScroll>
-            <Menu show={showWorkspaceModal} onCloseModal={toggleShowWorkspaceModal} style={{top:95, left:80} }>
+            <Menu show={showWorkspaceModal} onCloseModal={toggleShowWorkspaceModal} style={{ top: 95, left: 80 }}>
               <WorkspaceModal>
                 <h2>슬랙</h2>
                 <button onClick={onClickAddChannel}>채널 만들기</button>
                 <button onClick={onLogout}>로그아웃</button>
               </WorkspaceModal>
             </Menu>
+            {channelData?.map((x) => (<div>{x.name}</div>))}
           </MenuScroll>
         </Channels>
         <Chats>
@@ -185,7 +189,8 @@ const Index: VFC = () => {
           </form>
         </Modal>
       </WorkspaceWrapper>
-      <CreateChannelModal show={showCreateChannelModal} onCloseModal={onCloseModal}></CreateChannelModal>
+      <CreateChannelModal show={showCreateChannelModal} onCloseModal={onCloseModal}
+                          setShowCreateChannelModal={setShowCreateChannelModal} />
     </div>
   );
 };
