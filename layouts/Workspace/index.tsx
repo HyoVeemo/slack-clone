@@ -53,12 +53,14 @@ const Index: VFC = () => {
     error,
     revalidate,
     mutate
-  } = useSWR<IUser | false>("http://localhost:3095/api/users", fetcher, { dedupingInterval: 100000 });
-  const { data: channelData } = useSWR<IChannel[]>(userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null, fetcher);
-  
+  } = useSWR<IUser | false>("/api/users", fetcher, { dedupingInterval: 100000 });
+  const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
+  const { data: memberData } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
+
+
   const onLogout = useCallback(() => {
     axios
-      .post("http://localhost:3095/api/users/logout", null, {
+      .post("/api/users/logout", null, {
         // 쿠키 공유 옵션
         withCredentials: true
       })
@@ -94,7 +96,7 @@ const Index: VFC = () => {
       return;
     }
 
-    axios.post("http://localhost:3095/api/workspaces", {
+    axios.post("/api/workspaces", {
       workspace: newWorkspace,
       url: newUrl
     }, {
@@ -122,10 +124,9 @@ const Index: VFC = () => {
     setShowCreateChannelModal(true);
   }, []);
 
-  const onClickInviteWorkspace = useCallback((e)=>{
+  const onClickInviteWorkspace = useCallback((e) => {
     setShowInviteWorkspaceModal(true);
-  },[])
-
+  }, []);
 
 
   if (!userData) {
@@ -205,7 +206,7 @@ const Index: VFC = () => {
       <InviteWorkspaceModal show={showInviteWorkspaceModal} onCloseModal={onCloseModal}
                             setShowInviteWorkspaceModal={setShowInviteWorkspaceModal} />
       <InviteChannelModal show={showInviteChannelModal} onCloseModal={onCloseModal}
-                            setShowInviteChannelModal={setShowInviteChannelModal} />
+                          setShowInviteChannelModal={setShowInviteChannelModal} />
     </div>
   );
 };
