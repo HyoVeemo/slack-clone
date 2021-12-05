@@ -24,7 +24,7 @@ import loadable from "@loadable/component";
 import Menu from "@components/Menu/index";
 import Modal from "@components/Modal";
 import CreateChannelModal from "@components/CreateChannelModal";
-import { IChannel, IUser } from "../../typing/db";
+import { IChannel, IUser } from "@typings/db";
 import useInput from "@hooks/useInput";
 import { Button, Input, Label } from "@pages/SignUp/style";
 import { toast } from "react-toastify";
