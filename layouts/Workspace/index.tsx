@@ -178,6 +178,8 @@ const Index: VFC = () => {
                 <button onClick={onLogout}>로그아웃</button>
               </WorkspaceModal>
             </Menu>
+            <ChannelList />
+            <DMList />
             {channelData?.map((x) => (<div>{x.name}</div>))}
           </MenuScroll>
         </Channels>
