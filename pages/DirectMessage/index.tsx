@@ -6,6 +6,7 @@ import useSWR from 'swr';
 import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import { useParams } from 'react-router';
+import ChatBox from '@components/ChatBox';
 
 const DirectMessage = () => {
   const { workspace, id } = useParams<{ workspace: string; id: string }>();
@@ -27,7 +28,7 @@ const DirectMessage = () => {
         <span> {userData.nickname}</span>
       </Header>
       {/*<ChatList />*/}
-      {/*<ChatBox />*/}
+      <ChatBox chat={''} />
     </Container>
   );
 };
