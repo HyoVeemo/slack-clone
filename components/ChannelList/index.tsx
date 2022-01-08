@@ -1,9 +1,7 @@
-// import { CollapseButton } from '@components/DMList/style';
-// import EachChannel from '@components/EachChannel';
 import { CollapseButton } from '@components/DMList/style';
 import { IChannel, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
-import React, { FC, useCallback, useState } from 'react';
+import React, { VFC, useCallback, useState } from 'react';
 import { useParams } from 'react-router';
 import useSWR from 'swr';
 import EachChannel from '@components/EachChannel';
@@ -13,12 +11,13 @@ interface Props {
   userData?: IUser;
 }
 
-const ChannelList: FC<Props> = () => {
+const ChannelList: VFC<Props> = () => {
   const { workspace } = useParams<{ workspace?: string }>();
   const [channelCollapse, setChannelCollapse] = useState(false);
   const { data: userData } = useSWR<IUser>('/api/users', fetcher, {
     dedupingInterval: 2000, // 2초
   });
+
   const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
 
   const toggleChannelCollapse = useCallback(() => {
