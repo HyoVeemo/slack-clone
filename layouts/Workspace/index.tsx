@@ -31,6 +31,8 @@ import { toast } from "react-toastify";
 import { useParams } from "react-router";
 import InviteWorkspaceModal from "@components/InviteWorkspaceModal";
 import InviteChannelModal from "@components/InviteChannelModal";
+import ChannelList from "@components/ChannelList";
+import DMList from "@components/DMList";
 
 
 const Channel = loadable(() => import("@pages/Channel"));
@@ -178,6 +180,8 @@ const Index: VFC = () => {
                 <button onClick={onLogout}>로그아웃</button>
               </WorkspaceModal>
             </Menu>
+            <ChannelList />
+            <DMList />
             {channelData?.map((x) => (<div>{x.name}</div>))}
           </MenuScroll>
         </Channels>
