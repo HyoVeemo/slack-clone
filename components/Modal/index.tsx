@@ -8,12 +8,12 @@ interface Props {
 }
 
 const Modal: FC<Props> = ({ show, children, onCloseModal }) => {
-  const stopPropagation = useCallback((e)=>{
+  const stopPropagation = useCallback((e) => {
     e.stopPropagation();
-  }, [])
+  }, []);
 
-  if(!show){
-    return null
+  if (!show) {
+    return null;
   }
 
   return (
@@ -23,6 +23,6 @@ const Modal: FC<Props> = ({ show, children, onCloseModal }) => {
         {children}
       </div>
     </CreateModal>
-  )
+  );
 };
 export default Modal;

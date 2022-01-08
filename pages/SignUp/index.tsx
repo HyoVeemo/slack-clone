@@ -18,7 +18,7 @@ const SignUp = () => {
   const [signUpSuccess, setSignUpSuccess] = useState(false);
 
   const onChangePassword = useCallback(
-    e => {
+    (e) => {
       setPassword(e.target.value);
       setMissMatchError(e.target.value !== passwordCheck);
     },
@@ -29,7 +29,7 @@ const SignUp = () => {
   );
 
   const onChangePasswordCheck = useCallback(
-    e => {
+    (e) => {
       setPasswordCheck(e.target.value);
       setMissMatchError(e.target.value !== password);
     },
@@ -37,7 +37,7 @@ const SignUp = () => {
   );
 
   const onSubmit = useCallback(
-    e => {
+    (e) => {
       e.preventDefault();
       if (!missMatchError) {
         // 비동기 요청에서 setState 하는 경우 비동기 요청 전에 초기화
@@ -58,12 +58,12 @@ const SignUp = () => {
               withCredentials: true,
             },
           )
-          .then(response => {
+          .then((response) => {
             // 성공
             console.log('success:', response);
             setSignUpSuccess(true);
           })
-          .catch(error => {
+          .catch((error) => {
             // 실패
             setSignUpError(error.response?.data || error.message);
           })

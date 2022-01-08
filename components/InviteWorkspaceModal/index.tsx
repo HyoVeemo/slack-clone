@@ -7,7 +7,7 @@ import axios from 'axios';
 import React, { FC, useCallback } from 'react';
 import { useParams } from 'react-router';
 import { toast } from 'react-toastify';
-import useSWR, { mutate } from "swr";
+import useSWR, { mutate } from 'swr';
 
 interface Props {
   show: boolean;

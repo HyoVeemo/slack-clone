@@ -56,13 +56,11 @@ const DMList = () => {
         <span>Direct Messages</span>
       </h2>
       <div>
-        {
-          !channelCollapse &&
+        {!channelCollapse &&
           memberData?.map((member) => {
             const isOnline = onlineList.includes(member.id);
             return <EachDM key={member.id} member={member} isOnline={isOnline} />;
-          })
-        }
+          })}
       </div>
     </>
   );

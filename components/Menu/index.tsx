@@ -3,15 +3,15 @@ import { CloseModalButton, CreateMenu } from './style';
 
 interface Props {
   show: boolean;
-  onCloseModal: (e: any)=> void;
-  style:CSSProperties;
+  onCloseModal: (e: any) => void;
+  style: CSSProperties;
   closeButton?: boolean;
 }
 
-const Menu:FC<Props> = ({children,style, show, onCloseModal, closeButton}) => {
-   const stopPropagation = useCallback((e)=>{
-     e.stopPropagation();
-   },[])
+const Menu: FC<Props> = ({ children, style, show, onCloseModal, closeButton }) => {
+  const stopPropagation = useCallback((e) => {
+    e.stopPropagation();
+  }, []);
 
   if (!show) {
     return null;
@@ -24,10 +24,10 @@ const Menu:FC<Props> = ({children,style, show, onCloseModal, closeButton}) => {
         {children}
       </div>
     </CreateMenu>
-  )
-}
+  );
+};
 Menu.defaultProps = {
-  closeButton: true
-}
+  closeButton: true,
+};
 
 export default Menu;

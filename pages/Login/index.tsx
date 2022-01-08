@@ -15,7 +15,7 @@ const LogIn = () => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
   const onSubmit = useCallback(
-    e => {
+    (e) => {
       e.preventDefault();
 
       setLogInError(false);
@@ -28,17 +28,17 @@ const LogIn = () => {
           },
         )
         .then((response) => {
-           mutate(response.data)
-             })
-        .catch(error => {
+          mutate(response.data);
+        })
+        .catch((error) => {
           setLogInError(error.response?.data?.statusCode === 401);
         });
     },
     [email, password],
   );
 
-  if (data == undefined){
-    return <div> 로딩중.. </div>
+  if (data == undefined) {
+    return <div> 로딩중.. </div>;
   }
 
   if (data) {

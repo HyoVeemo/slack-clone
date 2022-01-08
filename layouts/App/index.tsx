@@ -6,7 +6,6 @@ const Login = loadable(() => import('@pages/Login'));
 const SignUp = loadable(() => import('@pages/SignUp'));
 const WorkSpace = loadable(() => import('@layouts/Workspace'));
 
-
 const Index: FC = () => {
   return (
     <Switch>

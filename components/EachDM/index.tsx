@@ -1,17 +1,16 @@
-import { useLocation, useParams } from "react-router";
-import useSWR from "swr";
-import fetcher from "@utils/fetcher";
-import { IUser } from "@typings/db";
-import React, { useEffect, VFC } from "react";
-import { NavLink } from "react-router-dom";
+import { useLocation, useParams } from 'react-router';
+import useSWR from 'swr';
+import fetcher from '@utils/fetcher';
+import { IUser } from '@typings/db';
+import React, { useEffect, VFC } from 'react';
+import { NavLink } from 'react-router-dom';
 
-
-interface Props{
+interface Props {
   member: IUser;
   isOnline: boolean;
 }
 
-const EachDM:VFC<Props> = ({member, isOnline}) =>{
+const EachDM: VFC<Props> = ({ member, isOnline }) => {
   const { workspace } = useParams<{ workspace?: string }>();
   const location = useLocation();
   const { data: userData } = useSWR<IUser>('/api/users', fetcher, {
@@ -30,7 +29,7 @@ const EachDM:VFC<Props> = ({member, isOnline}) =>{
   }, [mutate, location.pathname, workspace, member]);
 
   return (
-   <NavLink key={member.id} activeClassName="selected" to={`/workspace/${workspace}/dm/${member.id}`}>
+    <NavLink key={member.id} activeClassName="selected" to={`/workspace/${workspace}/dm/${member.id}`}>
       <i
         className={`c-icon p-channel_sidebar__presence_icon p-channel_sidebar__presence_icon--dim_enabled c-presence ${
           isOnline ? 'c-presence--active c-icon--presence-online' : 'c-icon--presence-offline'
@@ -45,6 +44,6 @@ const EachDM:VFC<Props> = ({member, isOnline}) =>{
       {member.id === userData?.id && <span> (나)</span>}
       {(count && count > 0 && <span className="count">{count}</span>) || null}
     </NavLink>
-  )
-}
+  );
+};
 export default EachDM;
