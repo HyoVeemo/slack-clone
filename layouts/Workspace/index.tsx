@@ -186,9 +186,6 @@ const Index: VFC = () => {
             </Menu>
             <ChannelList />
             <DMList />
-            {channelData?.map((x) => (
-              <div>{x.name}</div>
-            ))}
           </MenuScroll>
         </Channels>
         <Chats>
