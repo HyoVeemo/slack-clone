@@ -16,7 +16,6 @@ const DirectMessage = () => {
   const [chat, onChangeChat, setChat] = useInput('');
   const onSubmitForm = useCallback((e) => {
     e.preventDefault();
-    console.log('submit!');
     setChat('');
   }, []);
 
