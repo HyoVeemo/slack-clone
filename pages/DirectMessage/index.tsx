@@ -2,28 +2,32 @@ import React, { useCallback } from 'react';
 import { useParams } from 'react-router';
 import useSWR from 'swr';
 import gravatar from 'gravatar';
-import axios from 'axios';
-import { Container, Header } from './style';
 import fetcher from '@utils/fetcher';
 import useInput from '@hooks/useInput';
 import ChatBox from '@components/ChatBox';
 import ChatList from '@components/ChatList';
+import { Container, Header } from './style';
+import axios from 'axios';
 import { IDM } from '@typings/db';
 
 const DirectMessage = () => {
   const { workspace, id } = useParams<{ workspace: string; id: string }>();
-  const { data: myData } = useSWR(`/api/users`, fetcher);
   const { data: userData } = useSWR(`/api/workspaces/${workspace}/users/${id}`, fetcher);
-  const { data: chatData, revalidate } = useSWR<IDM[]>(
-    `/api/workspaces/${workspace}/dms/${id}/chats?perPage=${20}&page=${1}`,
-    fetcher,
-  );
+  const { data: myData } = useSWR(`/api/users`, fetcher);
+  const {
+    data: chatData,
+    mutate: mutateChat,
+    revalidate,
+  } = useSWR<IDM[]>(`/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=1`, fetcher);
 
   const [chat, onChangeChat, setChat] = useInput('');
 
   const onSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
+      console.log(chat);
+      // 1. 채팅을 서버에 발송
+      // 서버에 저장된 채팅을 다시 받아본다.
       if (chat?.trim()) {
         axios
           .post(`/api/workspaces/${workspace}/dms/${id}/chats`, {
@@ -31,11 +35,11 @@ const DirectMessage = () => {
           })
           .then(() => {
             revalidate();
-            // 채팅 등록한 후 채팅 내용 삭제 하기
             setChat('');
           })
           .catch(console.error);
       }
+      setChat('');
     },
     [chat],
   );

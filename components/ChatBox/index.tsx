@@ -15,21 +15,17 @@ const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder }) 
   // status 로 관리하는 것이 아닌, 태그로 관리하고 싶을 때 ref 사용
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
-    console.log(textareaRef.current);
     if (textareaRef.current) {
       autosize(textareaRef.current);
     }
   }, [autosize]);
-  const onKeydownChat = useCallback(
-    (e) => {
-      if (e.key === 'Enter') {
-        if (!e.shiftKey) {
-          onSubmitForm(e);
-        }
+  const onKeydownChat = useCallback((e) => {
+    if (e.key === 'Enter') {
+      if (!e.shiftKey) {
+        onSubmitForm(e);
       }
-    },
-    [onSubmitForm],
-  );
+    }
+  }, []);
 
   return (
     <ChatArea>
