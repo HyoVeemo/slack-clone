@@ -16,8 +16,12 @@ const useSocket = (workspace?: string): [SocketIOClient.Socket | undefined, () =
     return [undefined, disconnect];
   }
 
-  sockets[workspace] = io.connect(`${backUrl}/ws-${workspace}`);
-  // sockets[workspace].emit('login', 'world');
+  if (!sockets[workspace]) {
+    sockets[workspace] = io.connect(`${backUrl}/ws-${workspace}`, {
+      transports: ['websocket'],
+    });
+  }
+
   return [sockets[workspace], disconnect];
 };
 
