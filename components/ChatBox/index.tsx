@@ -1,5 +1,5 @@
 import { ChatArea, Form, MentionsTextarea, SendButton, Toolbox } from '@components/ChatBox/style';
-import React, { VFC, useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, VFC } from 'react';
 import autosize from 'autosize';
 
 interface Props {
@@ -18,17 +18,14 @@ const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder }) 
     if (textareaRef.current) {
       autosize(textareaRef.current);
     }
-  }, []);
-  const onKeydownChat = useCallback(
-    (e) => {
-      if (e.key === 'Enter') {
-        if (!e.shiftKey) {
-          onSubmitForm(e);
-        }
+  }, [autosize]);
+  const onKeydownChat = useCallback((e) => {
+    if (e.key === 'Enter') {
+      if (!e.shiftKey) {
+        onSubmitForm(e);
       }
-    },
-    [onSubmitForm],
-  );
+    }
+  }, []);
 
   return (
     <ChatArea>

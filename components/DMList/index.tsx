@@ -2,12 +2,12 @@
 // import useSocket from '@hooks/useSocket';
 import { CollapseButton } from '@components/DMList/style';
 import EachDM from '@components/EachDM';
-import { IDM, IUser, IUserWithOnline } from '@typings/db';
+import { IUser, IUserWithOnline } from '@typings/db';
 import fetcher from '@utils/fetcher';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { NavLink } from 'react-router-dom';
 import useSWR from 'swr';
+import useSocket from '@hooks/useSocket';
 
 const DMList = () => {
   const { workspace } = useParams<{ workspace?: string }>();
@@ -19,7 +19,7 @@ const DMList = () => {
     fetcher,
   );
 
-  // const [socket] = useSocket(workspace);
+  const [socket] = useSocket(workspace);
   const [channelCollapse, setChannelCollapse] = useState(false);
   const [onlineList, setOnlineList] = useState<number[]>([]);
 
@@ -32,16 +32,18 @@ const DMList = () => {
     setOnlineList([]);
   }, [workspace]);
 
-  // useEffect(() => {
-  //   socket?.on('onlineList', (data: number[]) => {
-  //     setOnlineList(data);
-  //   });
-  //   console.log('socket on dm', socket?.hasListeners('dm'), socket);
-  //   return () => {
-  //     console.log('socket off dm', socket?.hasListeners('dm'));
-  //     socket?.off('onlineList');
-  //   };
-  // }, [socket]);
+  useEffect(() => {
+    socket?.on('onlineList', (data: number[]) => {
+      setOnlineList(data);
+    });
+    // console.log('socket on dm', socket?.hasListeners('dm'), socket);
+    return () => {
+      // on 이 있으면 off 를 사용해야 한다.
+      // 한번보다 더 많은 연결이 될 수 있음.
+      // console.log('socket off dm', socket?.hasListeners('dm'));
+      socket?.off('onlineList');
+    };
+  }, [socket]);
 
   return (
     <>

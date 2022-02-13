@@ -14,6 +14,7 @@ interface Props {
   onCloseModal: () => void;
   setShowInviteChannelModal: (flag: boolean) => void;
 }
+
 const InviteChannelModal: FC<Props> = ({ show, onCloseModal, setShowInviteChannelModal }) => {
   const { workspace, channel } = useParams<{ workspace: string; channel: string }>();
   const [newMember, onChangeNewMember, setNewMember] = useInput('');

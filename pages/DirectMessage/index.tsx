@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useParams } from 'react-router';
-import useSWR, { useSWRInfinite } from 'swr';
+import useSWR from 'swr';
 import gravatar from 'gravatar';
 import fetcher from '@utils/fetcher';
 import useInput from '@hooks/useInput';
@@ -54,7 +54,7 @@ const DirectMessage = () => {
         <img src={gravatar.url(userData.email, { s: '24px', d: 'retro' })} alt={userData.nickname} />
         <span> {userData.nickname}</span>
       </Header>
-      <ChatList />
+      <ChatList chatData={chatData} />
       <ChatBox chat={chat} onSubmitForm={onSubmitForm} onChangeChat={onChangeChat} />
     </Container>
   );

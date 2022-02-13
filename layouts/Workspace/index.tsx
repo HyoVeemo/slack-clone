@@ -14,7 +14,7 @@ import {
   Workspaces,
   WorkspaceWrapper,
 } from '@layouts/Workspace/style';
-import React, { useCallback, useState, VFC } from 'react';
+import React, { useCallback, useEffect, useState, VFC } from 'react';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
@@ -33,6 +33,7 @@ import InviteWorkspaceModal from '@components/InviteWorkspaceModal';
 import InviteChannelModal from '@components/InviteChannelModal';
 import ChannelList from '@components/ChannelList';
 import DMList from '@components/DMList';
+import useSocket from '@hooks/useSocket';
 
 const Channel = loadable(() => import('@pages/Channel'));
 const DirectMessage = loadable(() => import('@pages/DirectMessage'));
@@ -57,6 +58,20 @@ const Index: VFC = () => {
   } = useSWR<IUser | false>('/api/users', fetcher, { dedupingInterval: 100000 });
   const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
   const { data: memberData } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
+  const [socket, disconnect] = useSocket(workspace);
+
+  useEffect(() => {
+    if (channelData && userData && socket) {
+      socket.emit('login', { id: userData.id, channels: channelData.map((x) => x.id) });
+    }
+  }, [socket, channelData, userData]);
+  useEffect(() => {
+    // workspace 가 바뀔 때
+    return () => {
+      disconnect();
+    };
+    // 내부 변수가 아니더라도, 내부 로직에서 사용되는 변수를 deps 에 넣어줘야 하는 경우가 생긴다.
+  }, [workspace, disconnect]);
 
   const onLogout = useCallback(() => {
     axios
@@ -67,7 +82,7 @@ const Index: VFC = () => {
       .then(() => {
         mutate(false, false);
       });
-  }, []);
+  }, [mutate]);
 
   // 토글 함수
   const onClickUserProfile = useCallback((e) => {
