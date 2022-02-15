@@ -2,7 +2,7 @@ import useInput from '@hooks/useInput';
 import { Button, Error, Form, Header, Input, Label, LinkContainer } from '@pages/SignUp/style';
 import axios from 'axios';
 import React, { useCallback, useState } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 // import fetcher from '@utils/fetcher';
 // import { Simulate } from 'react-dom/test-utils';
 import useSWR from 'swr';
@@ -28,7 +28,7 @@ const LogIn = () => {
           },
         )
         .then((response) => {
-          mutate(response.data);
+          revalidate();
         })
         .catch((error) => {
           setLogInError(error.response?.data?.statusCode === 401);

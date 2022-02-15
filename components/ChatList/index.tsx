@@ -1,5 +1,6 @@
-import React, { VFC } from 'react';
-import { ChatZone, Section } from './style';
+import React, { useCallback, useRef, VFC } from 'react';
+import Scrollbars from 'react-custom-scrollbars';
+import { ChatZone } from './style';
 import { IDM } from '@typings/db';
 import Chat from '@components/Chat';
 
@@ -8,11 +9,17 @@ interface Props {
 }
 
 const ChatList: VFC<Props> = ({ chatData }) => {
+  const scrollbarRef = useRef(null);
+
+  const onScroll = useCallback(() => {}, []);
+
   return (
     <ChatZone>
-      {chatData?.map((chat) => {
-        return <Chat key={chat.id} data={chat} />;
-      })}
+      <Scrollbars autoHide ref={scrollbarRef} onScrollFrame={onScroll}>
+        {chatData?.map((chat) => {
+          return <Chat key={chat.id} data={chat} />;
+        })}
+      </Scrollbars>
     </ChatZone>
   );
 };
