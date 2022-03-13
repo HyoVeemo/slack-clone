@@ -8,6 +8,7 @@ import { useParams } from 'react-router';
 import useSWR from 'swr';
 import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
+import makeSection from '@utils/makeSection';
 
 const Channel = () => {
   const { workspace, id } = useParams<{ workspace: string; id: string }>();
@@ -36,10 +37,12 @@ const Channel = () => {
     [chat],
   );
 
+  const chatSections = makeSection(chat ? [...chat].reverse() : []);
+
   return (
     <Container>
       <Header>채널 제목</Header>
-      <ChatList />
+      <ChatList chatSections={chatSections} />
       <ChatBox chat={chat} onSubmitForm={onSubmitForm} onChangeChat={onChangeChat} />
     </Container>
   );
