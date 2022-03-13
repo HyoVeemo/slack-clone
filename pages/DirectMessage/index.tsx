@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useParams } from 'react-router';
-import useSWR from 'swr';
+import useSWR, { useSWRInfinite } from 'swr';
 import gravatar from 'gravatar';
 import fetcher from '@utils/fetcher';
 import useInput from '@hooks/useInput';
@@ -10,6 +10,7 @@ import { Container, Header } from './style';
 import axios from 'axios';
 import { IDM } from '@typings/db';
 import makeSection from '@utils/makeSection';
+import Scrollbars from 'react-custom-scrollbars';
 
 const DirectMessage = () => {
   const { workspace, id } = useParams<{ workspace: string; id: string }>();
@@ -19,10 +20,21 @@ const DirectMessage = () => {
     data: chatData,
     mutate: mutateChat,
     revalidate,
-  } = useSWR<IDM[]>(`/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=1`, fetcher);
+    setSize, //페이지 수 바꿔주는 역할
+  } = useSWRInfinite<IDM[]>(
+    (index) => `/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=${index + 1}`,
+    fetcher,
+  );
+  // [[{id:3}], [{id:1}, {id:2}] 왼쪽일수록 과거 데이터
+
+  const isEmpty = chatData?.[0]?.length === 0;
+  const isReachingEnd = isEmpty || !!(chatData && chatData[chatData?.length - 1]?.length < 20);
 
   const [chat, onChangeChat, setChat] = useInput('');
 
+  const chatSections = makeSection(chatData ? chatData.flat().reverse() : []);
+
+  const scrollbarRef = useRef<Scrollbars>(null);
   const onSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
@@ -49,15 +61,19 @@ const DirectMessage = () => {
     return null;
   }
 
-  const chatSections = makeSection(chatData ? [...chatData].reverse() : []);
-
   return (
     <Container>
       <Header>
         <img src={gravatar.url(userData.email, { s: '24px', d: 'retro' })} alt={userData.nickname} />
         <span> {userData.nickname}</span>
       </Header>
-      <ChatList chatSections={chatSections} />
+      <ChatList
+        chatSections={chatSections}
+        scrollbarRef={scrollbarRef}
+        setSize={setSize}
+        isEmpty={isEmpty}
+        isReachingEnd={isReachingEnd}
+      />
       <ChatBox chat={chat} onSubmitForm={onSubmitForm} onChangeChat={onChangeChat} />
     </Container>
   );
