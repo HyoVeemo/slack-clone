@@ -1,21 +1,34 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Container, Header } from '@pages/Channel/style';
 import useInput from '@hooks/useInput';
 import ChatList from '@components/ChatList';
 import ChatBox from '@components/ChatBox';
 import axios from 'axios';
 import { useParams } from 'react-router';
-import useSWR from 'swr';
-import { IUser } from '@typings/db';
+import useSWR, { useSWRInfinite } from 'swr';
 import fetcher from '@utils/fetcher';
 import makeSection from '@utils/makeSection';
+import Scrollbars from 'react-custom-scrollbars';
+import { IDM } from '@typings/db';
 
 const Channel = () => {
   const { workspace, id } = useParams<{ workspace: string; id: string }>();
   const { data: userData } = useSWR(`/api/workspaces/${workspace}/users/${id}`, fetcher);
   const { data: myData } = useSWR(`/api/users`, fetcher);
   const [chat, onChangeChat, setChat] = useInput('');
+  const {
+    data: chatData,
+    mutate: mutateChat,
+    revalidate,
+    setSize, //페이지 수 바꿔주는 역할
+  } = useSWRInfinite<IDM[]>(
+    (index) => `/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=${index + 1}`,
+    fetcher,
+  );
+  const isEmpty = chatData?.[0]?.length === 0;
+  const isReachingEnd = isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
 
+  const scrollbarRef = useRef<Scrollbars>(null);
   const onSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
@@ -42,7 +55,13 @@ const Channel = () => {
   return (
     <Container>
       <Header>채널 제목</Header>
-      <ChatList chatSections={chatSections} />
+      <ChatList
+        chatSections={chatSections}
+        scrollbarRef={scrollbarRef}
+        isEmpty={isEmpty}
+        isReachingEnd={isReachingEnd}
+        setSize={setSize}
+      />
       <ChatBox chat={chat} onSubmitForm={onSubmitForm} onChangeChat={onChangeChat} />
     </Container>
   );
