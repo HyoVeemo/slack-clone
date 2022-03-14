@@ -11,6 +11,7 @@ import axios from 'axios';
 import { IDM } from '@typings/db';
 import makeSection from '@utils/makeSection';
 import Scrollbars from 'react-custom-scrollbars';
+import useSocket from '@hooks/useSocket';
 
 const DirectMessage = () => {
   const { workspace, id } = useParams<{ workspace: string; id: string }>();
@@ -31,6 +32,7 @@ const DirectMessage = () => {
   const isReachingEnd = isEmpty || !!(chatData && chatData[chatData?.length - 1]?.length < 20);
 
   const [chat, onChangeChat, setChat] = useInput('');
+  const [socket] = useSocket(workspace);
 
   const chatSections = makeSection(chatData ? chatData.flat().reverse() : []);
 
@@ -74,6 +76,34 @@ const DirectMessage = () => {
     },
     [chat],
   );
+
+  const onMessage = useCallback((data: IDM) => {
+    if (data.SenderId === Number(id) && myData.id !== Number(id)) {
+      // 소켓이 새롭게 받은 채팅을 가져다 주기 때문에, 굳이 revalidate 할 필요 없이 mutate 한다.
+      mutateChat((chatData) => {
+        chatData?.[0].unshift(data);
+        return chatData;
+      }, false).then(() => {
+        if (scrollbarRef.current) {
+          // 내가 보낸 채팅은 최하단으로 이동하지만
+          // 일정 높이 이상 스크롤 했을 때, 다른사람이 보낸 채팅은 스크롤 위치 유지
+          if (
+            scrollbarRef.current.getScrollHeight() <
+            scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
+          ) {
+            scrollbarRef.current.scrollToBottom();
+          }
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    socket?.on('dm', onMessage);
+    return () => {
+      socket?.off('dm', onMessage);
+    };
+  }, [socket, onMessage]);
 
   // 로딩 시 스크롤바 제일 아래로
   useEffect(() => {
