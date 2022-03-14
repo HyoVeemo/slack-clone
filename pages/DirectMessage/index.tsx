@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useParams } from 'react-router';
 import useSWR, { useSWRInfinite } from 'swr';
 import gravatar from 'gravatar';
@@ -38,17 +38,35 @@ const DirectMessage = () => {
   const onSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
-      console.log(chat);
       // 1. 채팅을 서버에 발송
       // 서버에 저장된 채팅을 다시 받아본다.
       if (chat?.trim()) {
+        const savedChat = chat;
+        if (chatData) {
+          mutateChat((prev) => {
+            prev?.[0].unshift({
+              id: (chatData[0][0]?.id || 0) + 1,
+              content: savedChat,
+              Sender: myData,
+              SenderId: myData.id,
+              Receiver: userData,
+              ReceiverId: userData.id,
+              createdAt: new Date(),
+            });
+            return prev;
+          }, false).then(() => {
+            setChat('');
+            if (scrollbarRef.current) {
+              scrollbarRef.current.scrollToBottom();
+            }
+          });
+        }
         axios
           .post(`/api/workspaces/${workspace}/dms/${id}/chats`, {
             content: chat,
           })
           .then(() => {
             revalidate();
-            setChat('');
           })
           .catch(console.error);
       }
@@ -56,6 +74,13 @@ const DirectMessage = () => {
     },
     [chat],
   );
+
+  // 로딩 시 스크롤바 제일 아래로
+  useEffect(() => {
+    if (chatData?.length === 1) {
+      scrollbarRef.current?.scrollToBottom();
+    }
+  });
 
   if (!userData || !myData) {
     return null;
