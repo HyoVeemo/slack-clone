@@ -19,9 +19,10 @@ const ChatList: VFC<Props> = ({ chatSections, scrollbarRef, setSize, isEmpty, is
   const onScroll = useCallback((values) => {
     if (values.scrollTop === 0 && !isReachingEnd) {
       // 끝에 도달하면 더이상 새로 불러올 필요가 없음
-      console.log('가장 위');
       setSize((prevSize) => prevSize + 1).then(() => {
-        // 스크롤 위치 유지
+        if (scrollbarRef?.current) {
+          scrollbarRef.current?.scrollTop(scrollbarRef.current?.getScrollHeight() - values.scrollHeight);
+        }
       });
     }
   }, []);
