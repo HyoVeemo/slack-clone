@@ -91,7 +91,9 @@ const DirectMessage = () => {
             scrollbarRef.current.getScrollHeight() <
             scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
           ) {
-            scrollbarRef.current.scrollToBottom();
+            setTimeout(() => {
+              scrollbarRef?.current?.scrollToBottom();
+            }, 50);
           }
         }
       });
