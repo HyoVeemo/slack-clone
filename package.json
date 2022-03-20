@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env TS_NODE_PROJECT=\\\"tsconfig-for-webpack-config.json\\\" webpack serve --env development",
-    "build": "cross-env TS_NODE_PROJECT=\\\"tsconfig-for-webpack-config.json\\\" NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production TS_NODE_PROJECT=\\\"tsconfig-for-webpack-config.json\\\" NODE_ENV=production webpack"
   },
   "author": "ZeroCho",
   "license": "MIT",
@@ -36,7 +36,8 @@
     "regexify-string": "^1.0.17",
     "socket.io-client": "^2.4.0",
     "swr": "^0.5.6",
-    "typescript": "^4.2.2"
+    "typescript": "^4.2.2",
+    "webpack-bundle-analyzer": "^4.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
@@ -54,6 +55,7 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/socket.io-client": "^1.4.36",
     "@types/webpack": "^4.41.26",
+    "@types/webpack-bundle-analyzer": "^4.4.1",
     "@types/webpack-dev-server": "^3.11.1",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.1.0",
